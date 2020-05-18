@@ -1,7 +1,7 @@
 apt install software-properties-common
 add-apt-repository universe
 apt update
-apt install curl apache2 composer fping git graphviz imagemagick libapache2-mod-php7.2 mariadb-client mariadb-server mtr-tiny nmap php7.2-cli php7.2-curl php7.2-gd php7.2-json php7.2-mbstring php7.2-mysql php7.2-snmp php7.2-xml php7.2-zip python-memcache python-mysqldb rrdtool snmp snmpd whois python3-pip
+apt install curl apache2 composer fping git graphviz imagemagick libapache2-mod-php7.2 mariadb-client mariadb-server mtr-tiny nmap php7.2-cli php7.2-curl php7.2-gd php7.2-json php7.2-mbstring php7.2-mysql php7.2-snmp php7.2-xml php7.2-zip python-memcache python-mysqldb rrdtool snmp snmpd whois python3-pip acl
 
 useradd librenms -d /opt/librenms -M -r
 usermod -a -G librenms www-data
@@ -27,21 +27,21 @@ GRANT ALL PRIVILEGES ON librenms.* TO 'librenms'@'localhost';
 FLUSH PRIVILEGES;
 exit
 
-vi /etc/mysql/mariadb.conf.d/50-server.cnf
+nano /etc/mysql/mariadb.conf.d/50-server.cnf
 
 innodb_file_per_table=1
 lower_case_table_names=0
 
 systemctl restart mysql
 
-vi /etc/php/7.2/apache2/php.ini
-vi /etc/php/7.2/cli/php.ini
+nano /etc/php/7.2/apache2/php.ini
+nano /etc/php/7.2/cli/php.ini
 
 a2enmod php7.2
 a2dismod mpm_event
 a2enmod mpm_prefork
 
-vi /etc/apache2/sites-available/librenms.conf
+nano /etc/apache2/sites-available/librenms.conf
 
 <VirtualHost *:80>
   DocumentRoot /opt/librenms/html/
@@ -56,12 +56,8 @@ vi /etc/apache2/sites-available/librenms.conf
 </VirtualHost>
 
 
-a2ensite librenms.conf
-a2enmod rewrite
-systemctl restart apache2
-
 cp /opt/librenms/snmpd.conf.example /etc/snmp/snmpd.conf
-vi /etc/snmp/snmpd.conf
+nano /etc/snmp/snmpd.conf
 
 
 curl -o /usr/bin/distro https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/distro
@@ -73,8 +69,12 @@ cp /opt/librenms/librenms.nonroot.cron /etc/cron.d/librenms
 cp /opt/librenms/misc/librenms.logrotate /etc/logrotate.d/librenms
 
 http://librenms.example.com/install.php
+http://192.168.2.197/install.php
 
 chown librenms:librenms /opt/librenms/config.php
 
 cd /opt/librenms
 ./validate.php
+
+TO ADJUST TIME ZONE !(SYSTEM)
+ln -sf /usr/share/zoneinfo/Asia/Dubai /etc/localtime
